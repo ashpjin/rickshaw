@@ -1,15 +1,15 @@
-# This version of Rickshaw modified and customized for non-proprietary use by Ashley Jin
-# ashpjin@cs.stanford.edu
-# 7-9-2013
-
-# Summmary of modifications
-#    - x_label offset higher to avoid overlapping with max y point's detail
-#    - associate legend label, swatch, and line chart path with same series class tag
-#    - different legend sorting options
-
 # Rickshaw
 
 Rickshaw is a JavaScript toolkit for creating interactive time series graphs, developed at [Shutterstock](http://www.shutterstock.com)
+
+This version of Rickshaw modified and customized for non-proprietary use by Ashley Jin
+ashpjin@cs.stanford.edu
+7-9-2013
+
+Summmary of modifications
+   - x_label offset higher to avoid overlapping with max y point's detail
+   - associate legend label, swatch, and line chart path with same series class tag
+   - different legend sorting options
 
 ## Getting Started
 
