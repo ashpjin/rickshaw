@@ -1827,7 +1827,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 	},
 
 	update: function(e) {
-
+	
 		e = e || this.lastEvent;
 		if (!e) return;
 		this.lastEvent = e;
@@ -2057,13 +2057,13 @@ Rickshaw.Graph.Legend = function(args) {
 		}
 
 		var swatch = document.createElement('div');
-		swatch.className = 'swatch';
+		swatch.className = 'swatch' + ' ' + getSeriesClassTag(series.name);
 		swatch.style.backgroundColor = series.color;
 
 		line.appendChild(swatch);
 
 		var label = document.createElement('span');
-		label.className = 'label';
+		label.className = 'label' + ' ' + getSeriesClassTag(series.name);
 		label.innerHTML = series.name;
 
 		line.appendChild(label);
@@ -2086,11 +2086,38 @@ Rickshaw.Graph.Legend = function(args) {
 		self.lines.push(_line);
 	};
 
-	series.forEach( function(s) {
-		self.addLine(s);
-	} );
+	this.prepLegend = function( type ){
+		console.log("legend prepLegend");
+
+		var sorted_series = series.slice();
+		if(type === "active only"){
+			// only show active series
+			sorted_series = series.filter(function(d){ return !d.disabled; });
+		} else if( type === "all active first" ){
+			// show all series with active at the top
+			sorted_series.sort(function(a, b){ return a.disabled-b.disabled; })
+		}
+		
+		sorted_series.forEach( function(s) {
+			self.addLine(s);
+		} );
+	};
 
 	graph.onUpdate( function() {} );
+	
+	this.update = function( series ){
+		this.lines = [];
+		
+		// hacky, removes all elems
+		// would it be faster to update existing elems? (e.g. d3 enter exit stuff)
+		$('.label').remove();
+		$('.swatch').remove();
+		
+		console.log("legend update");
+		this.prepLegend("active only");
+	};
+	
+	this.graph.onUpdate( function() { this.update() }.bind(this) );
 };
 Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
 
@@ -2262,7 +2289,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
 		series.path.setAttribute('stroke-width', this.strokeWidth);
-		series.path.setAttribute('class', series.className);
+		series.path.setAttribute('class', getSeriesClassTag(series.name));
 	},
 
 	configure: function(args) {
@@ -2861,6 +2888,7 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 } );
 
 Rickshaw.Series.zeroFill = function(series) {
+	console.log("zeroFill")
 	Rickshaw.Series.fill(series, 0);
 };
 
